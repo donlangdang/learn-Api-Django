@@ -10,17 +10,29 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import environ
+import os
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+environ.Env.read_env()
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-p&n262svs)okshpgq4ymg*$q!ck+5zsf=2(4kxd+hy56&0w-e='
+# django-insecure-p&n262svs)okshpgq4ymg*$q!ck+5zsf=2(4kxd+hy56&0w-e=
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'App_Home'
 ]
 
 MIDDLEWARE = [
@@ -73,14 +87,23 @@ WSGI_APPLICATION = 'learnApiDjango.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# SECRET_KEY='django-insecure-p&n262svs)okshpgq4ymg*$q!ck+5zsf=2(4kxd+hy56&0w-e='
+#  SECRET_KEY trong file settings.py 
+# DATABASE_ENGINE=django.db.backends.mysql
+# DATABASE_NAME=learnDataBaseDjango
+# DATABASE_USER=learnApiDjango
+# DATABASE_PASSWORD=1122
+# DATABASE_HOST=localhost
+# DATABASE_PORT=3306
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'learnDataBaseDjango',
-        'USER': 'learnApiDjango',
-        'PASSWORD': '1122',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'ENGINE': env("DATABASE_ENGINE"), 
+        'NAME': env("DATABASE_NAME"),
+        'USER': env("DATABASE_USER"),
+        'PASSWORD': env("DATABASE_PASSWORD"),
+        'HOST': env("DATABASE_HOST"),
+        'PORT': env("DATABASE_PORT"),
         'OPTIONS': {  
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
         }
