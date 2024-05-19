@@ -15,9 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from App_Home.views import GetAllDataAPI
 
+# biểu thức chính quy để làm url thì dùng re_path chứ ko dùng path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('apphome/', GetAllDataAPI.as_view())
