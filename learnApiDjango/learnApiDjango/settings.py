@@ -63,6 +63,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# url gốc khi vào localhost:port
 ROOT_URLCONF = 'learnApiDjango.urls'
 
 TEMPLATES = [
