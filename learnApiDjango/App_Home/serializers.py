@@ -12,7 +12,7 @@ GetAllData(App_Home_DB).data => sẽ trả về dạng json
 ModelSerializer 
 https://www.django-rest-framework.org/api-guide/serializers/#modelserializer
 
-muốn lấy dữ liệu từ db ra json mà lồng nhau thì dùng: PrimaryKeyRelatedField
+muốn lấy dữ liệu từ db ra json mà lồng nhau thì dùng:
 https://www.django-rest-framework.org/api-guide/relations/
 
 các class được định nghĩa ở đây cho phép chỉ sửa trên cơ sở dữ liệu hoặc không.
@@ -41,6 +41,4 @@ class GetAllData(serializers.ModelSerializer):
     model = App_Home_DB
     fields = ('id', 'name', 'email', 'phoneNumber', 'profile')
     depth = 1
-    
-    
     

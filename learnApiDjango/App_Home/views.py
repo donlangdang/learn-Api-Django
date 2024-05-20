@@ -21,6 +21,7 @@ from .serializers import GetAllData, GetAllProfile, PostAllProfile
 """
 
 class GetAllDataAPI(APIView):
+  # ở đây là quyền xác thực người dùng xem ai đăng nhập, ai có quyền dùng api...
   permission_classes=[IsAuthenticated]
   
   def get(self, request):
