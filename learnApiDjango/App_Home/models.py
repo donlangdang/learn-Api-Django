@@ -18,8 +18,6 @@ class App_Home_DB(models.Model):
   email = models.EmailField(max_length=255)
   phoneNumber = models.IntegerField()
   
-  def __str__(self):
-    return self.name
   
 class Profile(models.Model):
   birthday = models.CharField(max_length=10)
@@ -31,6 +29,3 @@ class Profile(models.Model):
     on_delete=models.CASCADE,
     related_name='profile'
   )
-  
-  def __str__(self):
-        return self.birthday

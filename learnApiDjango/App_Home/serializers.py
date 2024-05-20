@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import App_Home_DB
+from .models import App_Home_DB, Profile
 
 
 """
@@ -19,9 +19,28 @@ các class được định nghĩa ở đây cho phép chỉ sửa trên cơ s�
 có những class chỉ được đọc có những class làm nhiệm vụ khác.
 """
 
+class GetAllProfile(serializers.ModelSerializer):
+  
+  
+  class Meta:
+    model = Profile
+    fields = ('__all__')
+    depth = 1
+    
+# ở đây phương thức post nếu dùng depth = 1 thì không được vì serializers chỉ trả về json mà post thì cũng đi từ json đó qua serializers sẽ ko post được nó sẽ để null
+# phải để depth = 0 chỉ lấy bảng đó ra rồi mới post với people là số được.
+class PostAllProfile(serializers.ModelSerializer):
+  class Meta(GetAllProfile.Meta):
+    depth = 0
+    
+
 class GetAllData(serializers.ModelSerializer):
+  
   
   class Meta:
     model = App_Home_DB
-    fields = ('id', 'name', 'email', 'phoneNumber')
+    fields = ('id', 'name', 'email', 'phoneNumber', 'profile')
+    depth = 1
+    
+    
     

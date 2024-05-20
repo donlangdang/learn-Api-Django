@@ -16,10 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path
-from App_Home.views import GetAllDataAPI
+from App_Home.views import GetAllDataAPI, GetAllDataProfile
 
 # biểu thức chính quy để làm url thì dùng re_path chứ ko dùng path
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('apphome/', GetAllDataAPI.as_view())
+    path('apphome/', GetAllDataAPI.as_view()),
+    path('profile/', GetAllDataProfile.as_view())
 ]
