@@ -31,13 +31,46 @@ class GetAllDataAPI(APIView):
       if mydata:
         return Response(data=mydata.data, status=status.HTTP_200_OK)
       return Response(mydata.errors, status=status.HTTP_400_BAD_REQUEST)
+    
   def post(self, request):
     if request.method == 'POST':
       dataPost = GetAllData(data=request.data)
       if dataPost.is_valid():
         dataPost.save()
         return Response(dataPost.data, status=status.HTTP_201_CREATED)
-      return Response(dataPost.errors, status=status.HTTP_400_BAD_REQUEST)
+      return Response(status=status.HTTP_400_BAD_REQUEST)  
+    
+class GetPutDataById(APIView):
+  permission_classes=[IsAuthenticated]
+  # api lấy dữ liệu từ 1 id cố đingj
+  def get(self, request, pk):
+    if request.method == 'GET':
+      try:
+        pk_Data = App_Home_DB.objects.get(pk=pk)
+      except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+      myIdData = GetAllData(pk_Data)
+      print(myIdData.data)
+      if myIdData:
+        return Response(myIdData.data, status=status.HTTP_200_OK)
+      return Response(status=status.HTTP_400_BAD_REQUEST)   
+  # api cập nhật dữ liệu 
+  # khi cập nhật dữ liệu thì đẩy lên tất cả các trường và cả trường cần cập nhật
+  # không thể đẩy lên duy nhất 1 trường LMAO
+  def put(self, request, pk):
+    if request.method == 'PUT':
+      try:
+        put_Data = App_Home_DB.objects.get(pk=pk)
+      except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+      
+      myPutData  = GetAllData(put_Data, data=request.data)
+      if myPutData.is_valid():
+        myPutData.save()
+        return Response(myPutData.data, status=status.HTTP_201_CREATED)
+      return Response(status=status.HTTP_400_BAD_REQUEST)
+      
+     
     
 class GetAllDataProfile(APIView):
   permission_classes=[IsAuthenticated]
@@ -55,4 +88,4 @@ class GetAllDataProfile(APIView):
       if dataPostProfile.is_valid():
         dataPostProfile.save()
         return Response(dataPostProfile.data, status=status.HTTP_201_CREATED)
-      return Response(dataPostProfile.errors, status=status.HTTP_400_BAD_REQUEST)
+      return Response(status=status.HTTP_400_BAD_REQUEST)
