@@ -6,7 +6,7 @@
 
 - model làm việc với database:
 
-  - djangdo model: https://docs.djangoproject.com/en/5.0/ref/models/options/
+  - djangdo model meta option: https://docs.djangoproject.com/en/5.0/ref/models/options/
 
   - django field: https://docs.djangoproject.com/en/5.0/ref/models/fields/
 
@@ -37,3 +37,5 @@
 * mysqlclient==2.2.4
 * sqlparse==0.5.0
 ```
+
+### học thêm tại: https://github.com/duonghuuthanh/K19-RestfulApiDemo

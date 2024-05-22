@@ -34,6 +34,11 @@ class GetAllDataAPI(APIView):
     
   def post(self, request):
     if request.method == 'POST':
+      # data = {
+      #       'task': request.data.get('task'), 
+      #       'completed': request.data.get('completed'), 
+      #       'user': request.user.id
+      #   }
       dataPost = GetAllData(data=request.data)
       if dataPost.is_valid():
         dataPost.save()
@@ -46,17 +51,20 @@ class GetPutDataById(APIView):
   def get(self, request, pk):
     if request.method == 'GET':
       try:
+        # filter() là lấy nhiều đối tượng dựa trên 1 đặc điểm nhất định
+        # get() thì lấy 1 đối tượng duy nhất
         pk_Data = App_Home_DB.objects.get(pk=pk)
       except:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({"res": "this person does not exists or delete"}, status=status.HTTP_404_NOT_FOUND)
       myIdData = GetAllData(pk_Data)
-      print(myIdData.data)
+      # print("myiddata: ", myIdData.data)
       if myIdData:
         return Response(myIdData.data, status=status.HTTP_200_OK)
       return Response(status=status.HTTP_400_BAD_REQUEST)   
   # api cập nhật dữ liệu 
   # khi cập nhật dữ liệu thì đẩy lên tất cả các trường và cả trường cần cập nhật
   # không thể đẩy lên duy nhất 1 trường LMAO
+  # đã fix 2 lỗi trên :)))
   def put(self, request, pk):
     if request.method == 'PUT':
       try:
@@ -64,7 +72,15 @@ class GetPutDataById(APIView):
       except:
         return Response(status=status.HTTP_404_NOT_FOUND)
       
-      myPutData  = GetAllData(put_Data, data=request.data)
+      dataPut = request.data
+      mergeDatas = GetAllData(put_Data).data
+      for x in mergeDatas:
+        for y in dataPut:
+          if x == y:
+            mergeDatas[x] = dataPut.get(y)
+      # print("olddata: ", oldDatas)
+      # print("data1: ", dataPut)
+      myPutData  = GetAllData(put_Data, data=mergeDatas)
       if myPutData.is_valid():
         myPutData.save()
         return Response(myPutData.data, status=status.HTTP_201_CREATED)
@@ -88,4 +104,4 @@ class GetAllDataProfile(APIView):
       if dataPostProfile.is_valid():
         dataPostProfile.save()
         return Response(dataPostProfile.data, status=status.HTTP_201_CREATED)
-      return Response(status=status.HTTP_400_BAD_REQUEST)
+      return Response({"res": "profile này đã có hoặc người này chưa có"}, status=status.HTTP_400_BAD_REQUEST)

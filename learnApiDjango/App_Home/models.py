@@ -13,6 +13,9 @@ from django.db import models
 # tên_app_tên_model trong trường hợp này là: App_Home_app_home_db
 # ngoài ra trong này có class con là class Meta dùng định nghĩa hoặc cài đặt 1 số thứ liên quan
 # https://docs.djangoproject.com/en/5.0/ref/models/options/
+# mặc định là các trường này ko được null
+
+
 class App_Home_DB(models.Model):
   name = models.CharField(max_length=255)
   email = models.EmailField(max_length=255)

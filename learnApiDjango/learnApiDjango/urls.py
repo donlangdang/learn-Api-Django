@@ -24,7 +24,7 @@ from App_Home import urlsAppHome
 urlpatterns = [
     path('apphome/', include(urlsAppHome)),
     # path('student/', include(urlsStudent))
-    # path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     # path('apphome/', GetAllDataAPI.as_view()),
     # path('profile/', GetAllDataProfile.as_view())
 ]
