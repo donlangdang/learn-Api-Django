@@ -22,6 +22,7 @@ from .serializers import GetAllData, GetAllProfile, PostAllProfile
 
 class GetAllDataAPI(APIView):
   # ở đây là quyền xác thực người dùng xem ai đăng nhập, ai có quyền dùng api...
+  # ủy quyền,
   permission_classes=[IsAuthenticated]
   
   def get(self, request):
@@ -46,7 +47,7 @@ class GetAllDataAPI(APIView):
       return Response(status=status.HTTP_400_BAD_REQUEST)  
     
 class GetPutDataById(APIView):
-  permission_classes=[IsAuthenticated]
+  # permission_classes=[IsAuthenticated]
   # api lấy dữ liệu từ 1 id cố đingj
   def get(self, request, pk):
     if request.method == 'GET':
@@ -89,7 +90,7 @@ class GetPutDataById(APIView):
      
     
 class GetAllDataProfile(APIView):
-  permission_classes=[IsAuthenticated]
+  # permission_classes=[IsAuthenticated]
   
   def get(self, request):
     if request.method == 'GET':
@@ -105,3 +106,4 @@ class GetAllDataProfile(APIView):
         dataPostProfile.save()
         return Response(dataPostProfile.data, status=status.HTTP_201_CREATED)
       return Response({"res": "profile này đã có hoặc người này chưa có"}, status=status.HTTP_400_BAD_REQUEST)
+    

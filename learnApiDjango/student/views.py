@@ -4,11 +4,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .models import Student, Subject, Student_Subject
-from .serializers import GetAllStudent, GetAllSubject, GetStudent_Subject, PostStudent_Subject
+from .serializers import GetAllStudent, GetAllSubject, GetStudent_Subject, PostStudent_Subject, UserSerializer
+# đoạn import này để hash password.
+from django.contrib.auth.hashers import make_password
+# from .permissions import IsUserWithIdOne
 # Create your views here.
 
 class StudentAPI(APIView):
-  # permission_classes = [IsAuthenticated]
+  permission_classes = [IsAuthenticated]
   
   def get(self, request):
     if request.method == 'GET':
@@ -133,3 +136,17 @@ class StudentSubjectAPI(APIView):
         dataStudentSubjectPost.save()
         return Response(dataStudentSubjectPost.data, status=status.HTTP_201_CREATED)
       return Response(dataStudentSubjectPost.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+# đăng kí user
+class UserRegisterView(APIView):
+  def post(self, request):
+    postEmail_Password = UserSerializer(data=request.data)
+    if postEmail_Password.is_valid():
+      postEmail_Password.validated_data['password'] = make_password(postEmail_Password.validated_data['password'])
+      postEmail_Password.save()
+      return Response({ "message": "register successful!"}, status=status.HTTP_201_CREATED)
+    return Response({
+      "error_message": "This email has already exist!",
+      "errors_code": 400,
+    }, status=status.HTTP_400_BAD_REQUEST)
