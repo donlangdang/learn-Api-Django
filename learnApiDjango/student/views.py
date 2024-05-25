@@ -1,15 +1,25 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
+# Response(data, status=None, template_name=None, headers=None, content_type=None)
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .models import Student, Subject, Student_Subject
 from .serializers import GetAllStudent, GetAllSubject, GetStudent_Subject, PostStudent_Subject, UserSerializer
 # đoạn import này để hash password.
 from django.contrib.auth.hashers import make_password
+# cái này là để lấy model user mặc định ra
+# vì ta đã khai báo user custom làm user mặc định
+# nên ở đây sẽ là user custom
+from django.contrib.auth import get_user_model
+# IsUserWithIdOne để cấp quyền cho ai đó có id hoặc username...
+# khai báo như thế này trong mỗi class cần được cấp quyền truy cập
+# permission_classes = [IsAuthenticated, IsUserWithIdOne]
 # from .permissions import IsUserWithIdOne
+from django.contrib.auth import authenticate
 # Create your views here.
 
+# api lấy tất cả student hoặc post student
 class StudentAPI(APIView):
   permission_classes = [IsAuthenticated]
   
@@ -28,7 +38,8 @@ class StudentAPI(APIView):
         dataStudentPost.save()
         return Response(dataStudentPost.data, status=status.HTTP_201_CREATED)
       return Response(dataStudentPost.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+# class để lấy student theo id bằng pk(primary key) và để cập nhật thông tin student
 class GetPutStudentById(APIView):
   
   def get(self, request, pk):
@@ -67,7 +78,8 @@ class GetPutStudentById(APIView):
         return Response(myPutData.data, status=status.HTTP_201_CREATED)
       return Response(myPutData.errors, status=status.HTTP_400_BAD_REQUEST)
           
-      
+
+# api để lấy tất cả thông tin subject trong db và post subject mới vào db
 class SubjectAPI(APIView):
   # permission_classes = [IsAuthenticated]
   
@@ -86,7 +98,8 @@ class SubjectAPI(APIView):
         dataSubjectPost.save()
         return Response(dataSubjectPost.data, status=status.HTTP_201_CREATED)
       return Response(dataSubjectPost.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+# lấy các subject theo id hoặc cập nhật subject đã có sẵn
 class GetPutSuvjectAPI(APIView):
   
   def get(self, request, pk):
@@ -117,7 +130,8 @@ class GetPutSuvjectAPI(APIView):
         myputData.save()
         return Response(myputData.data, status=status.HTTP_201_CREATED)
       return Response(myputData.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+# lấy thông tin về student có các subject nào hoặc thêm mới subject vào thông tin student
 class StudentSubjectAPI(APIView):
   # permission_classes = [IsAuthenticated]
   
@@ -138,7 +152,7 @@ class StudentSubjectAPI(APIView):
       return Response(dataStudentSubjectPost.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
-# đăng kí user
+# đăng kí user với user đã được custom trong models
 class UserRegisterView(APIView):
   def post(self, request):
     postEmail_Password = UserSerializer(data=request.data)
@@ -150,3 +164,47 @@ class UserRegisterView(APIView):
       "error_message": "This email has already exist!",
       "errors_code": 400,
     }, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+# đăng nhập user:
+class UserLoginView(APIView):
+  def post(self, request):
+    username = request.data['email']
+    password = request.data['password']
+    # authenticate() để xác thực thông tin người dùng
+    user = authenticate(username=username, password=password)
+    if user is not None:
+      return Response({'mess': "You are logged in"}, status=status.HTTP_200_OK)
+    return Response({'mess': "Invalid login"}, status=status.HTTP_400_BAD_REQUEST)
+  
+# thay đổi email hoặc mật khẩu cho user
+class ChangePassword(APIView):
+  
+  def put(self, request):
+    email = request.data['email']
+    oldPassword = request.data['oldPassword']
+    newPassword = request.data['newPassword']
+    confirmPassword = request.data['confirmPassword']
+    user = authenticate(username=email, password=oldPassword)
+    if user is not None:
+      if newPassword == confirmPassword:
+        User = get_user_model()
+        userChangePassword = User.objects.get(email=email)
+        userChangePassword.set_password(confirmPassword)
+        userChangePassword.save()
+        return Response({'mess': "đổi mật khẩu thành công"}, status=status.HTTP_201_CREATED)
+      return Response({'mess': 'xác nhận mật khẩu sai'}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'mess': 'user chưa đăng kí hoặc không có'}, status=status.HTTP_400_BAD_REQUEST)
+        
+# custom payload trong jwt(json wed token)
+
+# cái này để xử lí sau làm thành thạo các bước trên đã...
+# Oh NOOOOO! cái này nhiều trường hợp quá thôi để từ từ đã phải ổn mấy cái ở trên đã
+# cái này là bảo mật và an toàn thông tin rồi nên từ từ đã....
+
+# xử lí 2+ người cùng dùng chung 1 access token đã hết hạn để lấy access token mới
+# vd 1 người dùng access token hết hạn để lấy token mới để đăng nhập thì được ko sao cả
+# chuyện xảy ra khi có người thứ 2 hoặc nhiều hơn dùng token hết hạn để lấy token mới
+# - Cả RT và AT đều cùng được cấp mới mỗi lần tạo mới AT, và lưu lại RT cũ.
+# - Một khi RT cũ bị sử dụng lại (không cần phân biệt user hay hacker) thì hủy toàn bộ RT đang hoạt động.
+# - User đăng nhập lại và lấy RT mới.
