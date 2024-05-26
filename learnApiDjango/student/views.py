@@ -5,7 +5,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .models import Student, Subject, Student_Subject
-from .serializers import GetAllStudent, GetAllSubject, GetStudent_Subject, PostStudent_Subject, UserSerializer
+from .serializers import (
+  GetAllStudent,
+  GetAllSubject,
+  GetStudent_Subject,
+  PostStudent_Subject,
+  UserSerializer)
+
 # đoạn import này để hash password.
 from django.contrib.auth.hashers import make_password
 # cái này là để lấy model user mặc định ra
@@ -15,13 +21,13 @@ from django.contrib.auth import get_user_model
 # IsUserWithIdOne để cấp quyền cho ai đó có id hoặc username...
 # khai báo như thế này trong mỗi class cần được cấp quyền truy cập
 # permission_classes = [IsAuthenticated, IsUserWithIdOne]
-# from .permissions import IsUserWithIdOne
+from .permissions import PermissionsForUserId
 from django.contrib.auth import authenticate
 # Create your views here.
 
 # api lấy tất cả student hoặc post student
 class StudentAPI(APIView):
-  permission_classes = [IsAuthenticated]
+  # permission_classes = [IsAuthenticated]
   
   def get(self, request):
     if request.method == 'GET':
@@ -41,6 +47,8 @@ class StudentAPI(APIView):
 
 # class để lấy student theo id bằng pk(primary key) và để cập nhật thông tin student
 class GetPutStudentById(APIView):
+  
+  permission_classes = [IsAuthenticated, PermissionsForUserId]
   
   def get(self, request, pk):
     if request.method == 'GET':
@@ -172,6 +180,7 @@ class UserLoginView(APIView):
     username = request.data['email']
     password = request.data['password']
     # authenticate() để xác thực thông tin người dùng
+    # class này còn phải sửa nữa
     user = authenticate(username=username, password=password)
     if user is not None:
       return Response({'mess': "You are logged in"}, status=status.HTTP_200_OK)

@@ -63,6 +63,7 @@ REST_FRAMEWORK = {
     ),
     # phân quyền mặc định cho tất cả api :)))
     # là phải xác thực mới lấy đc IsAuthenticated
+    # nói chung là phải đăng nhập mới coi đc api
     # 'DEFAULT_PERMISSION_CLASSES': (
     #     'rest_framework.permissions.IsAuthenticated',
     # ),

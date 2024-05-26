@@ -28,10 +28,10 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
   path('', StudentAPI.as_view()),
-  path('subject/', SubjectAPI.as_view()),
-  path('student-subject/', StudentSubjectAPI.as_view()),
   path('<int:pk>/', GetPutStudentById.as_view()),
+  path('subject/', SubjectAPI.as_view()),
   path('subject/<int:pk>/', GetPutSuvjectAPI.as_view()),
+  path('student-subject/', StudentSubjectAPI.as_view()),
   path('register/', UserRegisterView.as_view()),
   # class TokenObtainPairView có thể custom để trả về payload khác nhau
   path('token/', TokenObtainPairView.as_view()),

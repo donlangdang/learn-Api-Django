@@ -16,14 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path, include
-from App_Home.views import GetAllDataAPI, GetAllDataProfile
-from App_Home import urlsAppHome
-from student import urlsStudent
+# from App_Home.views import GetAllDataAPI, GetAllDataProfile
 
 # biểu thức chính quy để làm url thì dùng re_path chứ ko dùng path
 urlpatterns = [
-    path('apphome/', include(urlsAppHome)),
-    path('student/', include(urlsStudent)),
+    path('apphome/', include('App_Home.urls')),
+    path('student/', include('student.urls')),
     path('admin/', admin.site.urls),
     # path('apphome/', GetAllDataAPI.as_view()),
     # path('profile/', GetAllDataProfile.as_view())
