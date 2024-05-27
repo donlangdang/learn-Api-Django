@@ -7,7 +7,8 @@ from .views import (
   GetPutSuvjectAPI,
   UserRegisterView,
   UserLoginView,
-  ChangePassword
+  ChangePassword,
+  CustomPayloadJWT
 )
 from rest_framework_simplejwt.views import (
   TokenObtainPairView,
@@ -34,7 +35,7 @@ urlpatterns = [
   path('student-subject/', StudentSubjectAPI.as_view()),
   path('register/', UserRegisterView.as_view()),
   # class TokenObtainPairView có thể custom để trả về payload khác nhau
-  path('token/', TokenObtainPairView.as_view()),
+  path('token/', CustomPayloadJWT.as_view()),
   path('token/refresh/', TokenRefreshView.as_view()),
   path('login/', UserLoginView.as_view()),
   path('changepassword/', ChangePassword.as_view()),

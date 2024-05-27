@@ -10,7 +10,9 @@ from .serializers import (
   GetAllSubject,
   GetStudent_Subject,
   PostStudent_Subject,
-  UserSerializer)
+  UserSerializer,
+  CustomTokenSerializers
+  )
 
 # đoạn import này để hash password.
 from django.contrib.auth.hashers import make_password
@@ -23,6 +25,8 @@ from django.contrib.auth import get_user_model
 # permission_classes = [IsAuthenticated, IsUserWithIdOne]
 from .permissions import PermissionsForUserId
 from django.contrib.auth import authenticate
+
+from rest_framework_simplejwt.views import TokenObtainPairView
 # Create your views here.
 
 # api lấy tất cả student hoặc post student
@@ -206,7 +210,8 @@ class ChangePassword(APIView):
     return Response({'mess': 'user chưa đăng kí hoặc không có'}, status=status.HTTP_400_BAD_REQUEST)
         
 # custom payload trong jwt(json wed token)
-
+class CustomPayloadJWT(TokenObtainPairView):
+  serializer_class = CustomTokenSerializers
 # cái này để xử lí sau làm thành thạo các bước trên đã...
 # Oh NOOOOO! cái này nhiều trường hợp quá thôi để từ từ đã phải ổn mấy cái ở trên đã
 # cái này là bảo mật và an toàn thông tin rồi nên từ từ đã....
